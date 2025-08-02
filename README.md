@@ -1,7 +1,7 @@
 ## Features (as of 1.3):
- - [Pedestals](#Pedestals)
- - [Items command](#/items)
- - [Item Action Registry](#Item)
+ - [Pedestals](#pedestals)
+ - [Items command](#items)
+ - [Item Action Registry](#item-action-registry)
 
 
 ### Pedestals
