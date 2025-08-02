@@ -21,7 +21,7 @@ RecipeManager.registerRecipe(plugin, "test", new PedestalRecipe(
 Used to obtain custom items added by plugins
 Will open a menu where you can select which plugin you want to get the items of
 Handling of menus beyond that is up to the individual plugin
-See example of [ItemMenuManager](https://github.com/PuzzleDude98/WitherGames/blob/main/src/main/java/dev/withergames/items/ItemsMenuManager.java) on withergames
+See example of [ItemMenuManager](https://github.com/PuzzleDude98/WitherGames/blob/main/src/main/java/dev/withergames/items/ItemsMenuManager.java) on withergames.
 Example for registering item menu:
 ```java
 ItemMenuRegistry.registerItemMenu(
