@@ -1,0 +1,9 @@
+name: ZxdzeroEvents
+version: '1.0'
+main: dev.zxdzero.ZxdzeroEvents
+api-version: '1.21'
+authors: [ Puzzle_Dude98 ]
+commands:
+  pedestal:
+    description: Manage pedestals
+    usage: /pedestal <place|refill|remove> [item_type]
