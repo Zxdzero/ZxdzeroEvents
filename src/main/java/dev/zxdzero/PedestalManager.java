@@ -1,6 +1,7 @@
-package dev.zxdzero.pedestal;
+package dev.zxdzero;
 
 import dev.zxdzero.ZxdzeroEvents;
+import dev.zxdzero.registries.RecipeManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;

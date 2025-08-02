@@ -1,4 +1,4 @@
-package dev.zxdzero.pedestal;
+package dev.zxdzero.registries;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -10,12 +10,11 @@ import org.bukkit.plugin.Plugin;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
 public class RecipeManager {
     private static final Map<String, PedestalRecipe> recipes = new HashMap<>();
-    private static final Logger logger = Logger.getLogger(RecipeManager.class.getName());
+    private static final Logger logger = Logger.getLogger("ZxdzeroEvents-Pedestals");
 
     /**
      * Registers a recipe with a namespaced ID.

@@ -1,5 +1,5 @@
 name: ZxdzeroEvents
-version: '1.0'
+version: '1.1'
 main: dev.zxdzero.ZxdzeroEvents
 api-version: '1.21'
 authors: [ Puzzle_Dude98 ]
@@ -7,3 +7,14 @@ commands:
   pedestal:
     description: Manage pedestals
     usage: /pedestal <place|refill|remove> [item_type]
+  items:
+    description: Opens the items menu with all registered plugin items
+    usage: /items
+    permission: zxdzeroevents.command.items
+
+permissions:
+  zxdzeroevents.command.*:
+    description: Commands for Zxdzero Events Core
+    default: false
+    children:
+      zxdzeroevents.command.items: true
