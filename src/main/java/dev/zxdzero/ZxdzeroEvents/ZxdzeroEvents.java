@@ -2,6 +2,7 @@ package dev.zxdzero.ZxdzeroEvents;
 
 import dev.zxdzero.ZxdzeroEvents.commands.ItemsCommand;
 import dev.zxdzero.ZxdzeroEvents.commands.PedestalCommand;
+import dev.zxdzero.ZxdzeroEvents.listeners.PlayerInteractListener;
 import dev.zxdzero.ZxdzeroEvents.registries.RecipeManager;
 import dev.zxdzero.ZxdzeroEvents.registries.ItemMenuRegistry;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,6 +22,7 @@ public final class ZxdzeroEvents extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(pedestalManager, this);
         getServer().getPluginManager().registerEvents(itemsCommand, this);
+        getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
 
         getCommand("pedestal").setExecutor(new PedestalCommand(pedestalManager));
         getCommand("items").setExecutor(itemsCommand);
