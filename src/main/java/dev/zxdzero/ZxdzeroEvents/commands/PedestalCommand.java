@@ -1,7 +1,7 @@
-package dev.zxdzero.commands;
+package dev.zxdzero.ZxdzeroEvents.commands;
 
-import dev.zxdzero.PedestalManager;
-import dev.zxdzero.registries.RecipeManager;
+import dev.zxdzero.ZxdzeroEvents.PedestalManager;
+import dev.zxdzero.ZxdzeroEvents.registries.RecipeManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

@@ -1,4 +1,4 @@
-package dev.zxdzero.registries;
+package dev.zxdzero.ZxdzeroEvents.registries;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;

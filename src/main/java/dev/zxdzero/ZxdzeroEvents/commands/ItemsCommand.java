@@ -1,7 +1,7 @@
-package dev.zxdzero.commands;
+package dev.zxdzero.ZxdzeroEvents.commands;
 
-import dev.zxdzero.registries.ItemMenuRegistry;
-import dev.zxdzero.registries.ItemMenuRegistry.ItemMenuEntry;
+import dev.zxdzero.ZxdzeroEvents.registries.ItemMenuRegistry;
+import dev.zxdzero.ZxdzeroEvents.registries.ItemMenuRegistry.ItemMenuEntry;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

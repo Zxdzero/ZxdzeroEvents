@@ -1,4 +1,4 @@
-## Features (as of 1.1):
+## Features (as of 1.2):
  - [Pedestals](#Pedestals)
  - [Items command](#/items)
 

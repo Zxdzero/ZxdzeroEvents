@@ -1,7 +1,6 @@
-package dev.zxdzero;
+package dev.zxdzero.ZxdzeroEvents;
 
-import dev.zxdzero.ZxdzeroEvents;
-import dev.zxdzero.registries.RecipeManager;
+import dev.zxdzero.ZxdzeroEvents.registries.RecipeManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;

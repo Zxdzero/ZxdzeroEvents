@@ -1,4 +1,4 @@
-package dev.zxdzero.registries;
+package dev.zxdzero.ZxdzeroEvents.registries;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -187,7 +187,8 @@ public class RecipeManager {
                         new ItemStack(Material.DIAMOND, 2),
                         new ItemStack(Material.STICK, 1)
                 )
-        ));    }
+        ));
+    }
 
     /**
      * Clears all registered recipes.
