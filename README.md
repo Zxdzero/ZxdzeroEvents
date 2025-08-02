@@ -1,6 +1,7 @@
-## Features (as of 1.2):
- - [Pedestals](#Pedestals)
- - [Items command](#/items)
+## Features (as of 1.3):
+ - [[#Pedestals]]
+ - [[#/items]]
+ - [[#Item Action Registry]]
 
 
 ### Pedestals
@@ -31,4 +32,30 @@ ItemMenuRegistry.registerItemMenu(
                 Component.text("Withergames Items", NamedTextColor.GOLD),
                 this::createWitherGamesItemsMenu // method that returns Inventory
         );
+```
+
+### Item Action Registry
+A convenient way to quickly add rightclick behavior to an item, without making a whole listener  
+ItemActionRegistry accepts either a CustomModelDataComponent or an ItemStack, along with a BiConsumer of the player and itemstack object. See example for how to register behavior:  
+```java
+// This item just produces the cosmetic effects of the blaze amulet
+ItemActionRegistry.register(myItemBuilder(), (player, item) -> {  
+
+    player.getWorld().spawnParticle(  
+            Particle.FLAME,  
+            player.getLocation().add(0, 1, 0),
+            100
+            0.5, 1, 0.5, 
+            0.05 
+    );  
+    player.getWorld().spawnParticle(  
+            Particle.LARGE_SMOKE,  
+            player.getLocation().add(0, 1, 0),  
+            40,  
+            0.3, 0.8, 0.3,  
+            0.01  
+    );  
+    player.getWorld().playSound(player.getLocation(), Sound.ITEM_FIRECHARGE_USE, 1.0f, 1.0f);  
+    
+});
 ```
