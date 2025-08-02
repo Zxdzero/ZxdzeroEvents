@@ -4,7 +4,7 @@
 
 
 ### Pedestals
-Can be created and manipulated with the /pedestal command
+Can be created and manipulated with the /pedestal command  
 Plugins can register items/recipes for pedestals using RecipeManager.registerRecipe (see example)
 ```java
 RecipeManager.registerRecipe(plugin, "test", new PedestalRecipe(  
@@ -18,10 +18,10 @@ RecipeManager.registerRecipe(plugin, "test", new PedestalRecipe(
 
 
 ### /items
-Used to obtain custom items added by plugins
-Will open a menu where you can select which plugin you want to get the items of
-Handling of menus beyond that is up to the individual plugin
-See example of [ItemMenuManager](https://github.com/PuzzleDude98/WitherGames/blob/main/src/main/java/dev/withergames/items/ItemsMenuManager.java) on withergames.
+Used to obtain custom items added by plugins  
+Will open a menu where you can select which plugin you want to get the items of  
+Handling of menus beyond that is up to the individual plugin  
+See example of [ItemMenuManager](https://github.com/PuzzleDude98/WitherGames/blob/main/src/main/java/dev/withergames/items/ItemsMenuManager.java) on withergames  
 Example for registering item menu:
 ```java
 ItemMenuRegistry.registerItemMenu(
@@ -32,4 +32,3 @@ ItemMenuRegistry.registerItemMenu(
                 this::createWitherGamesItemsMenu // method that returns Inventory
         );
 ```
-
