@@ -18,6 +18,7 @@ public class ItemActionRegistry {
      * @param action The code to execute when the item is used
      */
     public static void register(CustomModelDataComponent customModelData, BiConsumer<Player, ItemStack> action) {
+        if (customModelData == null) { return; }
         actions.put(customModelData, action);
     }
 
@@ -29,6 +30,7 @@ public class ItemActionRegistry {
      * @param action The code to execute when the item is used
      */
     public static void register(ItemStack item, BiConsumer<Player, ItemStack> action) {
+        if (item == null) { return; }
         actions.put(item.getItemMeta().getCustomModelDataComponent(), action);
     }
 
