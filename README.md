@@ -1,7 +1,8 @@
-## Features (as of 1.3):
+## Features (as of 1.4):
  - [Pedestals](#pedestals)
  - [Items command](#items)
  - [Item Action Registry](#item-action-registry)
+ - [Cooldown Registry](#cooldown-registry)
 
 
 ### Pedestals
@@ -59,3 +60,18 @@ ItemActionRegistry.register(myItemBuilder(), (player, item) -> {
     
 });
 ```
+
+### Cooldown Registry
+The core plugin supports easy addition of item cooldowns using a namespaced key and a material type. The key is used as the actual identifier of the cooldown, and a provided material will show the visual cooldown to the player.  
+Registering a cooldown should be done during the plugins onEnable function, and looks like this:  
+```java
+public static NamespacedKey exampleCooldown;
+@Override  
+public void onEnable() {  
+    plugin = this;
+    exampleCooldown = new NamespacedKey(plugin, "example_cooldown");
+    CooldownRegistry.registerCooldown(exampleCooldown, Material.NAUTILUS_SHELL); 
+    }  
+}
+```
+Getting and setting the value of the cooldown can be done simply with the `getCooldown()` and `setCooldown()` methods. The cooldown will automatically tick down to 0, then stop.
