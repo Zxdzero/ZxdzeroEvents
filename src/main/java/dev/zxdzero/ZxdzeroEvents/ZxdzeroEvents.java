@@ -3,7 +3,6 @@ package dev.zxdzero.ZxdzeroEvents;
 import dev.zxdzero.ZxdzeroEvents.commands.ItemsCommand;
 import dev.zxdzero.ZxdzeroEvents.commands.PedestalCommand;
 import dev.zxdzero.ZxdzeroEvents.commands.ResetCommand;
-import dev.zxdzero.ZxdzeroEvents.cooldown.Cooldown;
 import dev.zxdzero.ZxdzeroEvents.listeners.PlayerInteractListener;
 import dev.zxdzero.ZxdzeroEvents.registries.CooldownRegistry;
 import dev.zxdzero.ZxdzeroEvents.registries.ItemMenuRegistry;
@@ -18,15 +17,12 @@ public final class ZxdzeroEvents extends JavaPlugin {
 
     public static ZxdzeroEvents getPlugin() { return plugin; }
 
-    public static NamespacedKey testCooldown;
-
     @Override
     public void onEnable() {
         plugin = this;
         PedestalManager pedestalManager = new PedestalManager();
         ItemsCommand itemsCommand = new ItemsCommand();
         CooldownRegistry.initialize(plugin);
-        testCooldown = new NamespacedKey(plugin, "test_cooldown");
 
 
         getServer().getPluginManager().registerEvents(pedestalManager, this);
@@ -36,9 +32,6 @@ public final class ZxdzeroEvents extends JavaPlugin {
         getCommand("pedestal").setExecutor(new PedestalCommand(pedestalManager));
         getCommand("items").setExecutor(itemsCommand);
         getCommand("reset").setExecutor(new ResetCommand());
-
-
-        CooldownRegistry.registerCooldown(testCooldown, Material.DIRT);
 
         RecipeManager.initDefaultRecipes(this);
         getLogger().info("Zxdzero Events Core initialized");
