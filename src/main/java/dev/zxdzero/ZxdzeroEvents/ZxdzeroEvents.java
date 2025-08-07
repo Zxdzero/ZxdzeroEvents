@@ -3,7 +3,6 @@ package dev.zxdzero.ZxdzeroEvents;
 import dev.zxdzero.ZxdzeroEvents.commands.ItemsCommand;
 import dev.zxdzero.ZxdzeroEvents.commands.PedestalCommand;
 import dev.zxdzero.ZxdzeroEvents.commands.ResetCommand;
-import dev.zxdzero.ZxdzeroEvents.cooldown.Cooldown;
 import dev.zxdzero.ZxdzeroEvents.listeners.PlayerInteractListener;
 import dev.zxdzero.ZxdzeroEvents.registries.CooldownRegistry;
 import dev.zxdzero.ZxdzeroEvents.registries.ItemMenuRegistry;
