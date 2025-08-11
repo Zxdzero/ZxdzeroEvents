@@ -3,9 +3,12 @@ package dev.zxdzero.ZxdzeroEvents.registries;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import org.joml.AxisAngle4f;
 
 import java.util.HashMap;
 import java.util.List;
@@ -42,33 +45,6 @@ public class RecipeManager {
 
         recipes.put(namespacedId, recipe);
         logger.info("Registered recipe '" + namespacedId + "' from plugin " + plugin.getName());
-        return true;
-    }
-
-    /**
-     * Registers a recipe with a fully qualified namespaced ID.
-     * Use this method if you need to specify a custom namespace.
-     *
-     * @param namespacedId The full namespaced ID (e.g., "myplugin:my_recipe")
-     * @param recipe The recipe to register
-     * @return true if the recipe was registered successfully, false if the ID already exists
-     */
-    public static boolean registerRecipe(String namespacedId, PedestalRecipe recipe) {
-        if (namespacedId == null || recipe == null) {
-            throw new IllegalArgumentException("Namespaced ID and recipe cannot be null");
-        }
-
-        if (!namespacedId.contains(":")) {
-            throw new IllegalArgumentException("Recipe ID must be namespaced (format: 'namespace:id')");
-        }
-
-        if (recipes.containsKey(namespacedId)) {
-            logger.warning("Recipe with ID '" + namespacedId + "' already exists. Registration failed.");
-            return false;
-        }
-
-        recipes.put(namespacedId, recipe);
-        logger.info("Registered recipe '" + namespacedId + "'");
         return true;
     }
 
@@ -200,15 +176,58 @@ public class RecipeManager {
         logger.info("Cleared all " + count + " registered recipes");
     }
 
-    public record PedestalRecipe(ItemStack result, List<ItemStack> ingredients) {
+    public static class PedestalRecipe {
+        private final ItemStack result;
+        private final List<ItemStack> ingredients;
+        private final float displayScale;
+        private final AxisAngle4f displayRotation;
+        private final float displayHeight;
+
+        public PedestalRecipe(ItemStack result, List<ItemStack> ingredients) {
+            this(result, ingredients, 1.0f, new AxisAngle4f(0, 0, 0, 1), 0f);
+        }
+        public PedestalRecipe(ItemStack result, List<ItemStack> ingredients, float displayScale) {
+            this(result, ingredients, displayScale, new AxisAngle4f(0, 0, 0, 1), 0f);
+        }
+
+        public PedestalRecipe(ItemStack result, List<ItemStack> ingredients, float displayScale, float displayHeight) {
+            this(result, ingredients, displayScale, new AxisAngle4f(0, 0, 0, 1), displayHeight);
+        }
+
+        // Constructor with custom display properties
+        public PedestalRecipe(ItemStack result, List<ItemStack> ingredients,
+                              float displayScale, AxisAngle4f displayRotation, float displayHeight) {
+            this.result = result.clone();
+            this.ingredients = ingredients.stream().map(ItemStack::clone).toList();
+            this.displayScale = displayScale;
+            this.displayRotation = displayRotation;
+            this.displayHeight = displayHeight;
+        }
 
         public ItemStack result() {
             return result.clone();
         }
 
+        public List<ItemStack> ingredients() {
+            return ingredients.stream().map(ItemStack::clone).toList();
+        }
+
+        public float getDisplayScale() {
+            return displayScale;
+        }
+
+        public AxisAngle4f getDisplayRotation() {
+            return displayRotation;
+        }
+        public float getDisplayHeight() {
+            return displayHeight;
+        }
+
         public Component getRecipeText() {
             TextComponent.Builder text = Component.text();
-            text.append(result.displayName().color(NamedTextColor.GOLD));
+            String plainName = PlainTextComponentSerializer.plainText().serialize(result.displayName());
+            plainName = plainName.replaceAll("^\\[|]$", "").trim();
+            text.append(Component.text(plainName, NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true));
             for (ItemStack ingredient : ingredients) {
                 text.append(Component.text("\n"));
                 text.append(Component.text(ingredient.getAmount() + "x " + ingredient.getType().name().replace("_", " "), NamedTextColor.GREEN));

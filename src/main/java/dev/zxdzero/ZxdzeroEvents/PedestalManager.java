@@ -31,7 +31,6 @@ public class PedestalManager implements Listener {
     private final NamespacedKey itemDisplayKey = new NamespacedKey(plugin, "item_display_uuid");
     private final NamespacedKey pedestalBaseKey = new NamespacedKey(plugin, "pedestal_base_uuid");
 
-
     public void placePedestal(Location location, String id) {
         RecipeManager.PedestalRecipe recipe = RecipeManager.getRecipe(id);
         if (recipe == null) {
@@ -39,7 +38,6 @@ public class PedestalManager implements Listener {
         }
 
         UUID pedestalId = UUID.randomUUID();
-
 
         BlockDisplay base = (BlockDisplay) location.getWorld().spawnEntity(location, EntityType.BLOCK_DISPLAY);
         base.setGravity(false);
@@ -60,21 +58,11 @@ public class PedestalManager implements Listener {
 
         // Create spinning item display
         Location itemLoc = location.clone().add(0, 1.8, 0);
-        ItemDisplay itemDisplay = (ItemDisplay) location.getWorld().spawnEntity(itemLoc, EntityType.ITEM_DISPLAY);
-        itemDisplay.setItemStack(recipe.result());
-        itemDisplay.setGravity(false);
-//        itemDisplay.setRotation( withergames.random.nextInt(360),0);
-        itemDisplay.setBillboard(TextDisplay.Billboard.CENTER);
-        itemDisplay.setDisplayWidth(1.5f);
-        itemDisplay.setDisplayHeight(1.5f);
-        itemDisplay.addScoreboardTag("spin");
+        ItemDisplay itemDisplay = createItemDisplay(itemLoc, recipe);
 
         // Create hologram text
         Location textLoc = location.clone().add(0, 2.5, 0);
-        TextDisplay textDisplay = (TextDisplay) location.getWorld().spawnEntity(textLoc, EntityType.TEXT_DISPLAY);
-        textDisplay.text(recipe.getRecipeText());
-        textDisplay.setBillboard(TextDisplay.Billboard.CENTER);
-        textDisplay.setGravity(false);
+        TextDisplay textDisplay = createTextDisplay(textLoc, recipe.getRecipeText());
 
         // Create interaction entity
         Location interactionLoc = location.clone().add(0, 1, 0);
@@ -87,6 +75,86 @@ public class PedestalManager implements Listener {
         base.getPersistentDataContainer().set(textDisplayKey, PersistentDataType.STRING, textDisplay.getUniqueId().toString());
         base.getPersistentDataContainer().set(interactionKey, PersistentDataType.STRING, interaction.getUniqueId().toString());
         base.getPersistentDataContainer().set(itemDisplayKey, PersistentDataType.STRING, itemDisplay.getUniqueId().toString());
+    }
+
+    /**
+     * Creates a TextDisplay entity
+     */
+    private TextDisplay createTextDisplay(Location location, Component text) {
+        TextDisplay textDisplay = (TextDisplay) location.getWorld().spawnEntity(location, EntityType.TEXT_DISPLAY);
+        textDisplay.text(text);
+        textDisplay.setBillboard(TextDisplay.Billboard.CENTER);
+        textDisplay.setGravity(false);
+        return textDisplay;
+    }
+
+    /**
+     * Creates an ItemDisplay entity with custom scaling and rotation based on recipe properties.
+     */
+    private ItemDisplay createItemDisplay(Location location, RecipeManager.PedestalRecipe recipe) {
+        ItemDisplay itemDisplay = (ItemDisplay) location.getWorld().spawnEntity(location, EntityType.ITEM_DISPLAY);
+        itemDisplay.setItemStack(recipe.result());
+        itemDisplay.setGravity(false);
+
+        itemDisplay.setBillboard(TextDisplay.Billboard.CENTER);
+
+
+
+        float scale = recipe.getDisplayScale();
+        Transformation transformation = new Transformation(
+                new Vector3f(0f, recipe.getDisplayHeight(), 0f),
+                recipe.getDisplayRotation(),
+                new Vector3f(scale, scale, scale),
+                new AxisAngle4f(0, 0, 0, 1)
+        );
+        itemDisplay.setTransformation(transformation);
+
+        return itemDisplay;
+    }
+
+    /**
+     * Combines yaw and pitch rotations into a single axis-angle representation.
+     */
+    private float[] combineRotations(float yawRadians, float pitchRadians) {
+        // Create rotation matrices for yaw and pitch
+        double cosYaw = Math.cos(yawRadians);
+        double sinYaw = Math.sin(yawRadians);
+        double cosPitch = Math.cos(pitchRadians);
+        double sinPitch = Math.sin(pitchRadians);
+
+        // Combined rotation matrix (Yaw * Pitch)
+        double m00 = cosYaw;
+        double m01 = sinYaw * sinPitch;
+        double m02 = sinYaw * cosPitch;
+        double m10 = 0;
+        double m11 = cosPitch;
+        double m12 = -sinPitch;
+        double m20 = -sinYaw;
+        double m21 = cosYaw * sinPitch;
+        double m22 = cosYaw * cosPitch;
+
+        // Convert rotation matrix to axis-angle
+        double trace = m00 + m11 + m22;
+        double angle = Math.acos((trace - 1.0) / 2.0);
+
+        if (Math.abs(angle) < 0.001) {
+            // No rotation
+            return new float[]{0f, 0f, 1f, 0f}; // angle, x, y, z
+        }
+
+        double x = (m21 - m12) / (2.0 * Math.sin(angle));
+        double y = (m02 - m20) / (2.0 * Math.sin(angle));
+        double z = (m10 - m01) / (2.0 * Math.sin(angle));
+
+        // Normalize axis
+        double length = Math.sqrt(x*x + y*y + z*z);
+        if (length > 0) {
+            x /= length;
+            y /= length;
+            z /= length;
+        }
+
+        return new float[]{(float)angle, (float)x, (float)y, (float)z};
     }
 
     public boolean refillPedestal(BlockDisplay base) {
@@ -110,21 +178,11 @@ public class PedestalManager implements Listener {
 
             // Create spinning item display
             Location itemLoc = location.clone().add(0, 1.8, 0);
-            ItemDisplay itemDisplay = (ItemDisplay) location.getWorld().spawnEntity(itemLoc, EntityType.ITEM_DISPLAY);
-            itemDisplay.setItemStack(recipe.result());
-            itemDisplay.setGravity(false);
-//            itemDisplay.setRotation( withergames.random.nextInt(360),0);
-            itemDisplay.setBillboard(TextDisplay.Billboard.CENTER);
-            itemDisplay.setDisplayWidth(1.5f);
-            itemDisplay.setDisplayHeight(1.5f);
-            itemDisplay.addScoreboardTag("spin");
+            ItemDisplay itemDisplay = createItemDisplay(itemLoc, recipe);
 
             // Create hologram text
             Location textLoc = location.clone().add(0, 2.5, 0);
-            TextDisplay textDisplay = (TextDisplay) location.getWorld().spawnEntity(textLoc, EntityType.TEXT_DISPLAY);
-            textDisplay.text(recipe.getRecipeText());
-            textDisplay.setBillboard(TextDisplay.Billboard.CENTER);
-            textDisplay.setGravity(false);
+            TextDisplay textDisplay = createTextDisplay(textLoc, recipe.getRecipeText());
 
             // Create interaction entity
             Location interactionLoc = location.clone().add(0, 1, 0);
@@ -207,6 +265,7 @@ public class PedestalManager implements Listener {
             player.sendMessage("§cYou don't have all the required ingredients!");
         }
     }
+
     private boolean hasAllIngredients(Player player, RecipeManager.PedestalRecipe recipe) {
         Map<Material, Integer> required = new HashMap<>();
         for (ItemStack ingredient : recipe.ingredients()) {
