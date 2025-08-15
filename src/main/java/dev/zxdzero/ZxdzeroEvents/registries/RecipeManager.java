@@ -230,7 +230,7 @@ public class RecipeManager {
             text.append(Component.text(plainName, NamedTextColor.GOLD).decoration(TextDecoration.BOLD, true));
             for (ItemStack ingredient : ingredients) {
                 text.append(Component.text("\n"));
-                text.append(Component.text(ingredient.getAmount() + "x " + ingredient.getType().name().replace("_", " "), NamedTextColor.GREEN));
+                text.append(Component.text(ingredient.getAmount() + "x " + PlainTextComponentSerializer.plainText().serialize(ingredient.displayName()).replaceAll("^\\[|]$", "").trim(), NamedTextColor.GREEN));
             }
             return text.build();
         }

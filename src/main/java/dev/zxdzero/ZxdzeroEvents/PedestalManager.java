@@ -112,51 +112,6 @@ public class PedestalManager implements Listener {
         return itemDisplay;
     }
 
-    /**
-     * Combines yaw and pitch rotations into a single axis-angle representation.
-     */
-    private float[] combineRotations(float yawRadians, float pitchRadians) {
-        // Create rotation matrices for yaw and pitch
-        double cosYaw = Math.cos(yawRadians);
-        double sinYaw = Math.sin(yawRadians);
-        double cosPitch = Math.cos(pitchRadians);
-        double sinPitch = Math.sin(pitchRadians);
-
-        // Combined rotation matrix (Yaw * Pitch)
-        double m00 = cosYaw;
-        double m01 = sinYaw * sinPitch;
-        double m02 = sinYaw * cosPitch;
-        double m10 = 0;
-        double m11 = cosPitch;
-        double m12 = -sinPitch;
-        double m20 = -sinYaw;
-        double m21 = cosYaw * sinPitch;
-        double m22 = cosYaw * cosPitch;
-
-        // Convert rotation matrix to axis-angle
-        double trace = m00 + m11 + m22;
-        double angle = Math.acos((trace - 1.0) / 2.0);
-
-        if (Math.abs(angle) < 0.001) {
-            // No rotation
-            return new float[]{0f, 0f, 1f, 0f}; // angle, x, y, z
-        }
-
-        double x = (m21 - m12) / (2.0 * Math.sin(angle));
-        double y = (m02 - m20) / (2.0 * Math.sin(angle));
-        double z = (m10 - m01) / (2.0 * Math.sin(angle));
-
-        // Normalize axis
-        double length = Math.sqrt(x*x + y*y + z*z);
-        if (length > 0) {
-            x /= length;
-            y /= length;
-            z /= length;
-        }
-
-        return new float[]{(float)angle, (float)x, (float)y, (float)z};
-    }
-
     public boolean refillPedestal(BlockDisplay base) {
         String pedestalIdStr = base.getPersistentDataContainer().get(pedestalKey, PersistentDataType.STRING);
         String itemType = base.getPersistentDataContainer().get(itemIdKey, PersistentDataType.STRING);
@@ -267,19 +222,39 @@ public class PedestalManager implements Listener {
     }
 
     private boolean hasAllIngredients(Player player, RecipeManager.PedestalRecipe recipe) {
-        Map<Material, Integer> required = new HashMap<>();
+        // Helper record to store both material and display name
+        record IngredientKey(Material material, Component displayName) {}
+
+        Map<IngredientKey, Integer> required = new HashMap<>();
         for (ItemStack ingredient : recipe.ingredients()) {
-            required.merge(ingredient.getType(), ingredient.getAmount(), Integer::sum);
-        }
+            if (ingredient == null || ingredient.getType() == Material.AIR) continue;
 
-        Map<Material, Integer> available = new HashMap<>();
-        for (ItemStack item : player.getInventory().getContents()) {
-            if (item != null && item.getType() != Material.AIR) {
-                available.merge(item.getType(), item.getAmount(), Integer::sum);
+            Component displayName = null;
+            if (ingredient.hasItemMeta() && ingredient.getItemMeta().hasDisplayName()) {
+                displayName = ingredient.getItemMeta().displayName();
             }
+
+            required.merge(new IngredientKey(ingredient.getType(), displayName),
+                    ingredient.getAmount(),
+                    Integer::sum);
         }
 
-        for (Map.Entry<Material, Integer> entry : required.entrySet()) {
+        Map<IngredientKey, Integer> available = new HashMap<>();
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item == null || item.getType() == Material.AIR) continue;
+
+            Component displayName = null;
+            if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
+                displayName = item.getItemMeta().displayName();
+            }
+
+            available.merge(new IngredientKey(item.getType(), displayName),
+                    item.getAmount(),
+                    Integer::sum);
+        }
+
+        // Check if all required ingredients (material + displayName) are available in the needed quantity
+        for (Map.Entry<IngredientKey, Integer> entry : required.entrySet()) {
             if (available.getOrDefault(entry.getKey(), 0) < entry.getValue()) {
                 return false;
             }
@@ -288,9 +263,22 @@ public class PedestalManager implements Listener {
     }
 
     private void removeIngredients(Player player, RecipeManager.PedestalRecipe recipe) {
-        Map<Material, Integer> toRemove = new HashMap<>();
+        // Same IngredientKey as in hasAllIngredients
+        record IngredientKey(Material material, Component displayName) {}
+
+        // Build map of what needs to be removed
+        Map<IngredientKey, Integer> toRemove = new HashMap<>();
         for (ItemStack ingredient : recipe.ingredients()) {
-            toRemove.merge(ingredient.getType(), ingredient.getAmount(), Integer::sum);
+            if (ingredient == null || ingredient.getType() == Material.AIR) continue;
+
+            Component displayName = null;
+            if (ingredient.hasItemMeta() && ingredient.getItemMeta().hasDisplayName()) {
+                displayName = ingredient.getItemMeta().displayName();
+            }
+
+            toRemove.merge(new IngredientKey(ingredient.getType(), displayName),
+                    ingredient.getAmount(),
+                    Integer::sum);
         }
 
         ItemStack[] contents = player.getInventory().getContents();
@@ -298,17 +286,25 @@ public class PedestalManager implements Listener {
             ItemStack item = contents[i];
             if (item == null || item.getType() == Material.AIR) continue;
 
-            Integer needed = toRemove.get(item.getType());
+            Component displayName = null;
+            if (item.hasItemMeta() && item.getItemMeta().hasDisplayName()) {
+                displayName = item.getItemMeta().displayName();
+            }
+
+            IngredientKey key = new IngredientKey(item.getType(), displayName);
+            Integer needed = toRemove.get(key);
+
             if (needed != null && needed > 0) {
                 int toTake = Math.min(needed, item.getAmount());
                 item.setAmount(item.getAmount() - toTake);
-                toRemove.put(item.getType(), needed - toTake);
+                toRemove.put(key, needed - toTake);
 
                 if (item.getAmount() == 0) {
                     contents[i] = null;
                 }
             }
         }
+
         player.getInventory().setContents(contents);
     }
 
