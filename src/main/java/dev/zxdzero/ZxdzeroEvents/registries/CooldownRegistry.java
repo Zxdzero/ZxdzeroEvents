@@ -91,9 +91,10 @@ public class CooldownRegistry implements Listener {
      * @param player The player
      * @param key The cooldown key
      * @param seconds Duration in seconds
+     * @param visualFeedback Show the cooldown visual
      * @return true if successful, false if cooldown type not registered
      */
-    public static boolean setCooldown(Player player, NamespacedKey key, int seconds) {
+    public static boolean setCooldown(Player player, NamespacedKey key, int seconds, boolean visualFeedback) {
         if (PLUGIN == null) {
             throw new IllegalStateException("CooldownRegistry not initialized!");
         }
@@ -110,11 +111,22 @@ public class CooldownRegistry implements Listener {
 
         // Apply visual cooldown if material is specified
         CooldownType cooldownType = registeredCooldowns.get(key);
-        if (cooldownType.hasMaterial()) {
+        if (cooldownType.hasMaterial() && visualFeedback) {
             applyVisualCooldown(player, cooldownType.getMaterial(), seconds);
         }
 
         return true;
+    }
+
+    /**
+     * Sets a cooldown for a specific player
+     * @param player The player
+     * @param key The cooldown key
+     * @param seconds Duration in seconds
+     * @return true if successful, false if cooldown type not registered
+     */
+    public static boolean setCooldown(Player player, NamespacedKey key, int seconds) {
+        return setCooldown(player, key, seconds, true);
     }
 
     /**
