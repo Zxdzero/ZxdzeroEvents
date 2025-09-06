@@ -7,6 +7,7 @@ import dev.zxdzero.ZxdzeroEvents.listeners.PlayerInteractListener;
 import dev.zxdzero.ZxdzeroEvents.registries.CooldownRegistry;
 import dev.zxdzero.ZxdzeroEvents.registries.ItemMenuRegistry;
 import dev.zxdzero.ZxdzeroEvents.registries.RecipeManager;
+import dev.zxdzero.ZxdzeroEvents.registries.Util;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -19,6 +20,8 @@ public final class ZxdzeroEvents extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        if (!Util.sessionCheck()) return;
+
         plugin = this;
         PedestalManager pedestalManager = new PedestalManager();
         ItemsCommand itemsCommand = new ItemsCommand();
@@ -29,6 +32,7 @@ public final class ZxdzeroEvents extends JavaPlugin {
         getServer().getPluginManager().registerEvents(itemsCommand, this);
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
 
+        if (!Util.sessionCheck()) return;
         getCommand("pedestal").setExecutor(new PedestalCommand(pedestalManager));
         getCommand("items").setExecutor(itemsCommand);
         getCommand("reset").setExecutor(new ResetCommand());

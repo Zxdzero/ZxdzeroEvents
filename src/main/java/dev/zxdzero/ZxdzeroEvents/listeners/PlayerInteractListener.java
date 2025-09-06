@@ -1,6 +1,7 @@
 package dev.zxdzero.ZxdzeroEvents.listeners;
 
 import dev.zxdzero.ZxdzeroEvents.registries.ItemActionRegistry;
+import dev.zxdzero.ZxdzeroEvents.registries.Util;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,6 +15,7 @@ public class PlayerInteractListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
+        if (!Util.sessionCheck()) return;
         if (e.getAction().toString().contains("RIGHT_CLICK")) {
 
             ItemStack item = e.getItem();

@@ -1,6 +1,7 @@
 package dev.zxdzero.ZxdzeroEvents;
 
 import dev.zxdzero.ZxdzeroEvents.registries.RecipeManager;
+import dev.zxdzero.ZxdzeroEvents.registries.Util;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -36,6 +37,8 @@ public class PedestalManager implements Listener {
         if (recipe == null) {
             throw new IllegalArgumentException("Invalid pedestal id");
         }
+
+        if (!Util.sessionCheck()) return;
 
         UUID pedestalId = UUID.randomUUID();
 

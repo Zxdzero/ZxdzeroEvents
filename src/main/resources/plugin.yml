@@ -3,6 +3,7 @@ version: ${version}
 main: dev.zxdzero.ZxdzeroEvents.ZxdzeroEvents
 api-version: '1.21'
 authors: [ Puzzle_Dude98 ]
+depend: [MinecraftSession]
 commands:
   pedestal:
     description: Manage pedestals
