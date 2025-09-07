@@ -15,7 +15,6 @@ public class PlayerInteractListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
-        if (!Util.sessionCheck()) return;
         if (e.getAction().toString().contains("RIGHT_CLICK")) {
 
             ItemStack item = e.getItem();

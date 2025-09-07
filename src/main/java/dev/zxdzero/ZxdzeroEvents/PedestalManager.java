@@ -38,8 +38,6 @@ public class PedestalManager implements Listener {
             throw new IllegalArgumentException("Invalid pedestal id");
         }
 
-        if (!Util.sessionCheck()) return;
-
         UUID pedestalId = UUID.randomUUID();
 
         BlockDisplay base = (BlockDisplay) location.getWorld().spawnEntity(location, EntityType.BLOCK_DISPLAY);
@@ -54,6 +52,7 @@ public class PedestalManager implements Listener {
         base.setTransformation(transform);
         base.setRotation(0,0);
         base.setBlock(Material.QUARTZ_PILLAR.createBlockData());
+        if (!Util.sessionCheck()) return;
 
         base.addScoreboardTag("pedestal");
         base.getPersistentDataContainer().set(pedestalKey, PersistentDataType.STRING, pedestalId.toString());
